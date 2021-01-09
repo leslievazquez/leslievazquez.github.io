@@ -3,23 +3,17 @@
 /// create function for data plotting
 function getPlots(id) {
     d3.json("data/samples.json").then((sampleData) => {
-    //console.log(`sampleData: ${sampleData}`);
 
     // collect data for bar and bubble plots
     var sdata = sampleData.samples.filter(d1 => d1.id.toString() === id)[0];
-    //console.log(sdata);
 
     // collect sample values for bar chart with top 10 OTU values
-    // reverse sample values
     var sample_values = sdata.sample_values.slice(0,10).reverse();
-    //console.log(`sample_values: ${sample_values}`);
     var OTU_top = (sdata.otu_ids.slice(0,10)).reverse();
     console.log(`OTU_top: ${OTU_top}`);
     var OTU_id = OTU_top.map(data => "OTU " + data);
     console.log(`OTU_id: ${OTU_id}`);
     var labels = sdata.otu_labels.slice(0,10);
-    //console.log(`labels: ${labels}`);
-
 
     /// BAR CHART AREA
     var trace1 = {
@@ -35,7 +29,7 @@ function getPlots(id) {
     var chartBar = [trace1];
     // apply the group bar mode to the layout
     var layout1 = {
-        title: "OTU top Ten",
+        title: "Values of Top 10 Samples",
         yaxis: {
             tickmode: "linear",
         },
@@ -82,15 +76,12 @@ function getPlots(id) {
     //console.log(wdata);
     // generate variable for the gauge value
     var washfreq = wdata.wfreq;
-    //console.log(`washfreq: ${washfreq}`);
     var trace3 = [
         {
           type: "indicator",
           mode: "gauge+number+delta",
           value: parseFloat(washfreq),
-          title: { text: `Weekly Washing Frequency` },
-          /* although it is arbitary, I made the treshold to be five times a week 
-          minimum to have an acceptable delta */ 
+          title: { text: `Frequency of Weekly Scrubs` },
           delta: { reference: 5, increasing: { color: "green"}},
           gauge: {
             axis: { range: [null, 9], tickwidth: 1, tickcolor: "black" },
@@ -131,22 +122,14 @@ function getPlots(id) {
 
 // create the function to get the requested data for demographic info panel
 function getData(id) {
-	///test
 	d3.json("data/samples.json").then((importedData) => {
-    //console.log(`importedData: ${importedData}`);
-    // collect metadata for demographic info panel
     var metadata = importedData.metadata;
-    // filter metadata by id
     var result = metadata.filter(meta => meta.id.toString() === id)[0];
-    //console.log(`var result: ${result}`);
-    // select Demographic Info panel
     var demographicInfo = d3.select("#sample-metadata");
-    // next clear panel
     demographicInfo.html("");
     // collect deographic data for the id and add to the panel
         Object.entries(result).forEach((key) => {
-        //- .bold()? no - assinging "h5" value makes font larger "h6" is too big
-        demographicInfo.append("h5").text(key[0].toUpperCase() + ": " + key[1] + "\n");
+            demographicInfo.append("h5").text(key[0].toUpperCase() + ": " + key[1] + "\n");
         });
 	});
 }
