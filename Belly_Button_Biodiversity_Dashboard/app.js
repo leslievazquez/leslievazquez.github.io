@@ -1,4 +1,4 @@
-// app.js file - Randy Dettmer 2020/05/15
+
 
 /// create function for data plotting
 function getPlots(id) {
